@@ -896,10 +896,7 @@ def enumFromHDF5(hid_t enumId, str byteorder):
       raise HDF5ExtError(
         "failed to get element name from HDF5 enumerated type")
 
-    if PY_MAJOR_VERSION > 2:
-      pyename = PyUnicode_DecodeUTF8(ename, strlen(ename), NULL)
-    else:
-      pyename = ename
+    pyename = ename.encode('utf8')
 
     free(ename)
 
@@ -1022,10 +1019,7 @@ def loadEnum(hid_t type_id):
   enumId = getTypeEnum(type_id)
   # Get the byteorder
   get_order(type_id, c_byteorder)
-  if PY_MAJOR_VERSION > 2:
-    byteorder = PyUnicode_DecodeUTF8(c_byteorder, strlen(c_byteorder), NULL)
-  else:
-    byteorder = c_byteorder
+  byteorder = c_byteorder.encode('utf8')
   # Get the Enum and NumPy types and close the HDF5 type.
   try:
     return enumFromHDF5(enumId, byteorder)
@@ -1052,10 +1046,7 @@ def HDF5ToNPNestedType(hid_t type_id):
   for i from 0 <= i < nfields:
     # Get the member name
     c_colname = H5Tget_member_name(type_id, i)
-    if PY_MAJOR_VERSION > 2:
-      colname = PyUnicode_DecodeUTF8(c_colname, strlen(c_colname), NULL)
-    else:
-      colname = c_colname
+    colname = c_colname.encode('utf8')
     # Get the member type
     member_type_id = H5Tget_member_type(type_id, i)
     # Get the HDF5 class

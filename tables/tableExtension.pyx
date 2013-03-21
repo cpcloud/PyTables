@@ -31,7 +31,7 @@ from tables.exceptions import HDF5ExtError
 from tables.conditions import call_on_recarr
 from tables.utilsExtension import (getNestedField, AtomFromHDF5Type,
   createNestedType, HDF5ToNPExtType, createNestedType, platform_byteorder,
-  PTTypeToHDF5, PTSpecialKinds, NPExtPrefixesToPTKinds, HDF5ClassToString, 
+  PTTypeToHDF5, PTSpecialKinds, NPExtPrefixesToPTKinds, HDF5ClassToString,
   H5T_STD_I64)
 from tables.utils import SizeType
 
@@ -278,10 +278,7 @@ cdef class Table(Leaf):
     for i from 0 <= i < nfields:
       # Get the member name
       c_colname = H5Tget_member_name(type_id, i)
-      if PY_MAJOR_VERSION > 2:
-        colname = PyUnicode_DecodeUTF8(c_colname, strlen(c_colname), NULL)
-      else:
-        colname = c_colname
+      colname = c_colname.encode('utf8')
 
       # Get the member type
       member_type_id = H5Tget_member_type(type_id, i)
@@ -319,12 +316,7 @@ cdef class Table(Leaf):
         elif colobj.kind in ['int', 'uint', 'float', 'complex', 'enum']:
           # Keep track of the byteorder for this column
           get_order(member_type_id, c_byteorder2)
-          if PY_MAJOR_VERSION > 2:
-            byteorder2 = PyUnicode_DecodeUTF8(c_byteorder2,
-                                              strlen(c_byteorder2),
-                                              NULL)
-          else:
-            byteorder2 = c_byteorder2
+          byteorder2 = c_byteorder2.encode('utf8')
           if byteorder2 in ["little", "big"]:
             field_byteorders.append(byteorder2)
 

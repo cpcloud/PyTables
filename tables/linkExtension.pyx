@@ -256,12 +256,8 @@ cdef class ExternalLink(Link):
     if ret < 0:
       raise HDF5ExtError("failed to unpack external link value")
 
-    if PY_MAJOR_VERSION > 2:
-      filename = PyUnicode_DecodeUTF8(cfilename, strlen(cfilename), NULL)
-      obj_path = PyUnicode_DecodeUTF8(c_obj_path, strlen(c_obj_path), NULL)
-    else:
-      filename = cfilename
-      obj_path = c_obj_path
+    filename = cfilename.encode('utf8')
+    obj_path = c_obj_path.encode('utf8')
 
     self.target = filename+':'+obj_path
 

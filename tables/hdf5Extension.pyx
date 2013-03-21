@@ -1333,11 +1333,7 @@ cdef class Array(Leaf):
     if ret < 0:
       raise HDF5ExtError("Unable to get array info.")
 
-    if PY_MAJOR_VERSION > 2:
-        byteorder = PyUnicode_DecodeUTF8(cbyteorder, strlen(cbyteorder), NULL)
-    else:
-        byteorder = cbyteorder
-
+    byteorder = cbyteorder.encode('utf8')
     # Get the extendable dimension (if any)
     self.extdim = -1  # default is non-extensible Array
     for i from 0 <= i < self.rank:
@@ -1840,11 +1836,7 @@ cdef class VLArray(Leaf):
     # Get info on dimensions & types (of base class)
     H5VLARRAYget_info(self.dataset_id, self.disk_type_id, &nrecords,
                       cbyteorder)
-
-    if PY_MAJOR_VERSION > 2:
-        byteorder = PyUnicode_DecodeUTF8(cbyteorder, strlen(cbyteorder), NULL)
-    else:
-        byteorder = cbyteorder
+    byteorder = cbyteorder.encode('utf8')
 
     # Get some properties of the atomic type
     self._atomicdtype = atom.dtype
@@ -2030,10 +2022,7 @@ cdef class UnImplemented(Leaf):
     shape = H5UIget_info(self.parent_id, encoded_name, cbyteorder)
     shape = tuple(map(SizeType, shape))
     self.dataset_id = H5Dopen(self.parent_id, encoded_name, H5P_DEFAULT)
-    if PY_MAJOR_VERSION > 2:
-        byteorder = PyUnicode_DecodeUTF8(cbyteorder, strlen(cbyteorder), NULL)
-    else:
-        byteorder = cbyteorder
+    byteorder = cbyteorder.encode('utf8')
 
     return (shape, byteorder, self.dataset_id)
 
